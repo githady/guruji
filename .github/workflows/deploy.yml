@@ -41,6 +41,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/githady/guruji.git
+
           if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
             git fetch origin gh-pages
             git checkout -B gh-pages origin/gh-pages
@@ -51,5 +53,9 @@ jobs:
           git rm -rf . || true
           cp -R contact-manager/dist/. .
           git add .
-          git commit -m "Deploy GitHub Pages" || true
-          git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/githady/guruji.git gh-pages
+          if git diff --cached --quiet; then
+            echo "No changes to publish"
+          else
+            git commit -m "Deploy GitHub Pages"
+            git push -f origin gh-pages
+          fi
