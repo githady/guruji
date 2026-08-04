@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: contact-manager
-        run: npm ci
+        run: npm install
 
       - name: Build app
         working-directory: contact-manager
