@@ -21,12 +21,18 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci
-        working-directory: contact-manager
+        shell: bash
+        run: |
+          ls -la
+          ls -la contact-manager
+          cd contact-manager
+          npm ci
 
       - name: Build
-        run: npm run build
-        working-directory: contact-manager
+        shell: bash
+        run: |
+          cd contact-manager
+          npm run build
 
       - name: Deploy to GitHub Pages
         shell: bash
