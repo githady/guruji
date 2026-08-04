@@ -31,9 +31,7 @@ jobs:
         working-directory: contact-manager
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./contact-manager/dist
-          publish_branch: gh-pages
-          force_orphan: true
+        run: npm run deploy
+        working-directory: contact-manager
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
