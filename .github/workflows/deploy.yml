@@ -54,7 +54,10 @@ jobs:
           fi
 
           git rm -rf . || true
-          cp -R contact-manager/dist/. .
+          mkdir -p ./.tmp-dist
+          cp -R contact-manager/dist/. ./.tmp-dist/
+          cp -R ./.tmp-dist/. .
+          rm -rf ./.tmp-dist
           git add .
           if git diff --cached --quiet; then
             echo "No changes to publish"
