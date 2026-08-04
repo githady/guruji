@@ -31,7 +31,13 @@ jobs:
         working-directory: contact-manager
 
       - name: Deploy to GitHub Pages
-        run: npm run deploy
+        shell: bash
         working-directory: contact-manager
+        run: |
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/githady/guruji.git
+          npm run deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
