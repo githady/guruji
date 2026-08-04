@@ -43,6 +43,9 @@ jobs:
 
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/githady/guruji.git
 
+          git reset --hard HEAD
+          git clean -fd
+
           if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
             git fetch origin gh-pages
             git checkout -B gh-pages origin/gh-pages
