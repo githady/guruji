@@ -7,8 +7,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-
+  contents: read
+  pages: write
+  id-token: write
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -28,40 +30,15 @@ jobs:
       - name: Build app
         working-directory: contact-manager
         run: npm run build
+      # keep the Checkout, Setup Node, Install dependencies and Build app steps
+      # after the build step, add:
 
-      - name: Deploy to gh-pages
-        shell: bash
-        run: |
-          set -e
-          if [ ! -d contact-manager/dist ]; then
-            echo "Build output missing"
-            exit 1
-          fi
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: contact-manager/dist
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/githady/guruji.git
-
-          git reset --hard HEAD
-          git clean -fd
-
-          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
-            git fetch origin gh-pages
-            git checkout -B gh-pages origin/gh-pages
-          else
-            git checkout --orphan gh-pages
-          fi
-
-          git rm -rf . || true
-          mkdir -p ./.tmp-dist
-          cp -R contact-manager/dist/. ./.tmp-dist/
-          cp -R ./.tmp-dist/. .
-          rm -rf ./.tmp-dist
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to publish"
-          else
-            git commit -m "Deploy GitHub Pages"
-            git push -f origin gh-pages
-          fi
